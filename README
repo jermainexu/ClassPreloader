@@ -1,0 +1,8 @@
+Class Preloader for Java
+===================
+
+A tool for class preloading in java. Class loading might become the performance bottleneck for some latency critical project. Class preloading might be very difficult to be done by initialization. For example, the initialization need user interaction or user input which could be hard to simulate in some cases.
+
+In that case, one may want to preload some classes to warm up the engines. Of course you can do this by Class.forName or ClassLoader.loadClass. However, that means we need to maintain a possibly very long list of classes to be loaded. Also, for some java files which include a lot of anonymous class, it will be nice if we are able to preload by package or by other kind of criteria like regular expression. Or getting what we need to load from a separated service.
+
+This is a ClassPreloader based on Visitor Pattern. You could choose whatever criteria you like and whatever action you want to take on a class.
