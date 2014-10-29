@@ -11,6 +11,9 @@ import preloader.classpath.element.ClassFile;
 import preloader.classpath.element.ClassPathElement;
 import preloader.classpath.visitor.ClassPathVisitorAdapter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Raymond on 2014/10/19.
  */
@@ -18,12 +21,14 @@ public class ClassPreloader {
     private ClassPathProcessor processor;
     private PreloadCriteria criteria;
     private PreloadCallBack callback;
+    private Set<String> loadedClasses;
 
 
     public ClassPreloader(ClassLoader classLoader, PreloadCriteria criteria, PreloadCallBack callback){
         this.processor = new ClassPathProcessor(classLoader);
         this.criteria = criteria;
         this.callback = callback;
+        this.loadedClasses = new HashSet<>();
     }
 
     public void preload(){
@@ -38,16 +43,18 @@ public class ClassPreloader {
 
         @Override
         public boolean visit(ClassFile classFile) {
-            if(criteria.loadClassFile(classFile)){
-                String className = classFile.getClassName();
+            String className = classFile.getClassName();
+            if(criteria.loadClassFile(classFile) && !loadedClasses.contains(className)){
+                loadedClasses.add(className);
                 try {
                     processor.getClassLoader().loadClass(className);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
                 callback.classLoaded(className);
+                return true;
             }
-            return true;
+            return false;
         }
     }
 }

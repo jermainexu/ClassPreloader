@@ -48,7 +48,6 @@ public class ClassPathElement implements ClassPathNode{
                     while(files.hasMoreElements()){
                         JarEntry jarEntry = files.nextElement();
                         String name = jarEntry.getName().trim();
-                        InputStream is = jar.getInputStream(jarEntry);
                         handleClasspathFile(visitor, name);
                     }
                 } catch (IOException e) {
